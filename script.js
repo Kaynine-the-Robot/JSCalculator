@@ -14,8 +14,8 @@ class Calculator{
   }
   
   appendNumber(number){
-    if (number === '.' && this.screenVal.includes('.')) return
-    this.screenVal = this.screenVal + number.toString()
+    if (number === '.' && this.screenVal.includes('.')) {this.displayError("Error: Can Only Have 1 Decimal Point")}
+    else {this.screenVal = this.screenVal + number.toString()}
   }
   
   chooseOperation(operation){
@@ -25,7 +25,22 @@ class Calculator{
   }
   
   compute(){
-  	this.screenVal = eval(this.screenVal).toString()
+    if (["*","/","-","+"].includes(this.screenVal.charAt(this.screenVal.length - 1))) {this.displayError("Error: Cannot End With Operator")}
+    else if (this.unevenBrackets()) {this.displayError("Error: Uneven Brackets")}
+  	else {this.screenVal = eval(this.screenVal).toString()}
+  }
+
+  unevenBrackets(){
+    var depth = 0
+    for(var i of this.screenVal) {
+        if(i === "(")
+          depth++;
+        else if(i === ")")
+          depth++;
+      }
+      
+    if(depth%2 === 0) return false
+    else return true
   }
   
   updateDisplay(){
@@ -38,21 +53,30 @@ class Calculator{
     document.output.textview.style.color = 'red';
   }
   
-  checkError(){
+  checkIfError(){
   	switch(this.screenVal){
     	case "Error: No Operands":
       	this.screenVal = this.oldVal;
       	break;
       case "Error: Two Consecutive Operators":
       	this.screenVal = this.oldVal;
-      	break;
+          break;
+      case "Error: Cannot End With Operator":
+        this.screenVal = this.oldVal;
+        break;
+      case "Error: Can Only Have 1 Decimal Point":
+        this.screenVal = this.oldVal;
+        break;
+      case "Error: Uneven Brackets":
+        this.screenVal = this.oldVal;
+        break;
       default:
       	document.output.textview.style.color = 'white';
         this.updateDisplay()
       	break;
     }
   }
-  
+
 }
 
 const screenValue = document.output.textview.value
@@ -66,35 +90,37 @@ const calculator = new Calculator(screenValue)
 
 numberButtons.forEach(button => {
 	button.addEventListener('click', () => {
-  	calculator.checkError()
+  	calculator.checkIfError()
   	calculator.appendNumber(button.innerText)
     calculator.updateDisplay()
+    calculator.checkIfError()
   })
 })
 
 operationButtons.forEach(button => {
 	button.addEventListener('click', () => {
-  	calculator.checkError()
+  	calculator.checkIfError()
   	calculator.chooseOperation(button.innerText)
     calculator.updateDisplay()
-    calculator.checkError()
+    calculator.checkIfError()
   })
 })
 
 equalsButton.addEventListener('click', () => {
-		calculator.checkError()
+	calculator.checkIfError()
   	calculator.compute()
     calculator.updateDisplay()
+    calculator.checkIfError()
 })
 
 deleteButton.addEventListener('click', () => {
-		calculator.checkError()
+	calculator.checkIfError()
   	calculator.delete()
     calculator.updateDisplay()
 })
 
 clearButton.addEventListener('click', () => {
-		calculator.checkError()
+	calculator.checkIfError()
   	calculator.clear()
     calculator.updateDisplay()
 })
