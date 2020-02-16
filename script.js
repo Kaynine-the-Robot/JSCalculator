@@ -27,7 +27,21 @@ class Calculator{
   compute(){
     if (["*","/","-","+"].includes(this.screenVal.charAt(this.screenVal.length - 1))) {this.displayError("Error: Cannot End With Operator")}
     else if (this.unevenBrackets()) {this.displayError("Error: Uneven Brackets")}
-  	else {this.screenVal = eval(this.screenVal).toString()}
+    else {
+      this.fixMultiplyBrackets()
+      this.screenVal = eval(this.screenVal).toString()
+    }
+  }
+
+  fixMultiplyBrackets(){
+    var i = 0
+    var len = this.screenVal.length
+    for(i; i < len; i++) {
+        if(this.screenVal.charAt(i) === "(" && (this.screenVal.charAt(i-1) >= "0") && (this.screenVal.charAt(i-1) <= "9"))
+          this.screenVal = (this.screenVal.slice(0,i) + "*" + this.screenVal.slice(i))
+        else if(this.screenVal.charAt(i) === ")" && (this.screenVal.charAt(i+1) >= "0") && (this.screenVal.charAt(i+1) <= "9"))
+          this.screenVal = (this.screenVal.slice(0,i+1) + "*" + this.screenVal.slice(i+1))
+      }
   }
 
   unevenBrackets(){
