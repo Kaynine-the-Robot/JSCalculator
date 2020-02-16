@@ -1,6 +1,3 @@
-:host{
-    overflow: auto;
-}
 
 html,body{
     height: 100%;
@@ -9,7 +6,6 @@ html,body{
     margin: 0;
     padding: 0;
     background: linear-gradient(to left top, #09E2ED, #00FF9E);
-    position: absolute;
   }
   
   @media screen and (min-width: 650px){
